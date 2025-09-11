@@ -12,8 +12,9 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (userExists) {
       console.log('User already exists');
-      res.status(400);
-      throw new Error('User already exists');
+      return res.status(400).json({
+        message: 'User already exists'
+      });
     }
 
     console.log('Creating new user');
@@ -38,6 +39,14 @@ const registerUser = asyncHandler(async (req, res) => {
     }
   } catch (error) {
     console.error('Registration error:', error);
+    
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        message: 'Validation error',
+        error: error.message,
+      });
+    }
+    
     res.status(500).json({
       message: 'Server error during registration',
       error: error.message,
@@ -45,4 +54,23 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { registerUser };
+const authUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (user && (await user.matchPassword(password))) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      token: generateToken(user._id),
+    });
+  } else {
+    return res.status(401).json({
+      message: 'Invalid email or password'
+    });
+  }
+});
+
+export { registerUser, authUser };

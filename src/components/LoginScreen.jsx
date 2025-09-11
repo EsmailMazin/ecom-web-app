@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../redux/actions/userActions';
+import './Auth.css';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -25,35 +26,72 @@ const LoginScreen = () => {
   };
 
   return (
-    <div>
-      <h2>Sign In</h2>
-      {error && <p>{error}</p>}
-      {loading && <p>Loading...</p>}
-      <form onSubmit={submitHandler}>
-        <div>
-          <label htmlFor="email">Email Address</label>
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="email"
-          />
+    <div className="auth-container">
+      <div className="auth-card">
+        <div className="auth-header">
+          <h2>Welcome Back</h2>
+          <p>Sign in to your account</p>
         </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-          />
+
+        {error && (
+          <div className="error-message">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={submitHandler} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            className="auth-button"
+            disabled={loading}
+          >
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <p>Don't have an account? 
+            <button 
+              className="link-button" 
+              onClick={() => navigate('/register')}
+            >
+              Sign Up
+            </button>
+          </p>
+          <button 
+            className="link-button" 
+            onClick={() => navigate('/')}
+          >
+            ← Back to Home
+          </button>
         </div>
-        <button type="submit">Sign In</button>
-      </form>
+      </div>
     </div>
   );
 };

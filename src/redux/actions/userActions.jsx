@@ -1,4 +1,4 @@
-import axios from 'axios';
+import API from '../../utils/axiosConfig';
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -14,13 +14,7 @@ export const login = (email, password) => async (dispatch) => {
   try {
     dispatch({ type: USER_LOGIN_REQUEST });
 
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const { data } = await axios.post('/api/users/login', { email, password }, config);
+    const { data } = await API.post('/api/users/login', { email, password });
 
     dispatch({
       type: USER_LOGIN_SUCCESS,
@@ -43,13 +37,7 @@ export const register = (name, email, password) => async (dispatch) => {
   try {
     dispatch({ type: USER_REGISTER_REQUEST });
 
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    const { data } = await axios.post('/api/users', { name, email, password }, config);
+    const { data } = await API.post('/api/users', { name, email, password });
 
     dispatch({
       type: USER_REGISTER_SUCCESS,
@@ -76,4 +64,6 @@ export const register = (name, email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem('userInfo');
   dispatch({ type: USER_LOGOUT });
+  // Force a page reload to ensure clean state
+  window.location.href = '/';
 };
